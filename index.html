@@ -1,0 +1,539 @@
+Загрузка сайта калькулятора займа на веб-сервер
+
+Я подготовлю для вас полный код сайта калькулятора займа и объясню, как его загрузить на веб-сервер.
+
+Полный код сайта калькулятора займа
+
+`html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор займа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+        
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .calculator {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .range-container {
+            margin-top: 15px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+        }
+        
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        button {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .results {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .results h2 {
+color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .result-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .result-item:last-child {
+            font-weight: bold;
+            color: #2c3e50;
+            background-color: #e8f4fc;
+            font-size: 1.1rem;
+        }
+        
+        .payment-schedule {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        
+        .payment-schedule h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e8f4fc;
+        }
+        
+        .info-box {
+            background-color: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            padding: 20px;
+        }
+        
+        .highlight {
+            color: #3498db;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Калькулятор займа</h1>
+            <p class="subtitle">Рассчитайте ежемесячный платеж и график погашения займа</p>
+        </header>
+        
+        <div class="calculator-container">
+            <div class="calculator">
+                <div class="input-group">
+                    <label for="loanAmount">Сумма займа (руб.)</label>
+                    <input type="number" id="loanAmount" min="1000" max="10000000" step="1000" value="100000">
+                    <div class="range-container">
+                        <input type="range" id="loanAmountRange" min="1000" max="10000000" step="1000" value="100000">
+                        <div class="range-value">
+                            <span>1 000 руб.</span>
+                            <span>10 000 000 руб.</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="loanTerm">Срок займа (мес.)</label>
+                    <input type="number" id="loanTerm" min="1" max="360" value="12">
+                    <div class="range-container">
+                        <input type="range" id="loanTermRange" min="1" max="360" value="12">
+                        <div class="range-value">
+                            <span>1 мес.</span>
+                            <span>360 мес.</span>
+                        </div>
+                    </div>
+</div>
+                
+                <div class="input-group">
+                    <label for="interestRate">Процентная ставка (% годовых)</label>
+                    <input type="number" id="interestRate" min="1" max="50" step="0.1" value="10">
+                    <div class="range-container">
+                        <input type="range" id="interestRateRange" min="1" max="50" step="0.1" value="10">
+                        <div class="range-value">
+                            <span>1%</span>
+                            <span>50%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="paymentType">Тип платежа</label>
+                    <select id="paymentType">
+                        <option value="annuity">Аннуитетный (равными долями)</option>
+                        <option value="differentiated">Дифференцированный</option>
+                    </select>
+                </div>
+                
+                <button id="calculateBtn">Рассчитать</button>
+                
+                <div class="info-box">
+                    <h4>О калькуляторе</h4>
+                    <p>Этот калькулятор поможет вам рассчитать ежемесячные платежи по займу, общую сумму выплат и переплату. Вы можете выбрать между аннуитетными и дифференцированными платежами.</p>
+                </div>
+            </div>
+            
+            <div class="results" id="results">
+                <h2>Результаты расчета</h2>
+                <div class="result-item">
+                    <span>Ежемесячный платеж:</span>
+                    <span id="monthlyPayment">0 руб.</span>
+                </div>
+                <div class="result-item">
+                    <span>Общая сумма выплат:</span>
+                    <span id="totalPayment">0 руб.</span>
+                </div>
+                <div class="result-item">
+                    <span>Переплата по займу:</span>
+                    <span id="overpayment">0 руб.</span>
+                </div>
+                <div class="result-item">
+                    <span>Эффективная ставка:</span>
+                    <span id="effectiveRate">0%</span>
+                </div>
+                
+                <div class="payment-schedule" id="paymentSchedule">
+                    <h3>График платежей (первые 12 месяцев)</h3>
+                    <table id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>Месяц</th>
+                                <th>Платеж</th>
+                                <th>Основной долг</th>
+                                <th>Проценты</th>
+                                <th>Остаток долга</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Данные графика будут добавлены через JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 Калькулятор займа. Все расчеты приведены для ознакомления.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Получаем элементы DOM
+            const loanAmountInput = document.getElementById('loanAmount');
+            const loanAmountRange = document.getElementById('loanAmountRange');
+            const loanTermInput = document.getElementById('loanTerm');
+            const loanTermRange = document.getElementById('loanTermRange');
+            const interestRateInput = document.getElementById('interestRate');
+            const interestRateRange = document.getElementById('interestRateRange');
+const paymentTypeSelect = document.getElementById('paymentType');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resultsDiv = document.getElementById('results');
+            const monthlyPaymentSpan = document.getElementById('monthlyPayment');
+            const totalPaymentSpan = document.getElementById('totalPayment');
+            const overpaymentSpan = document.getElementById('overpayment');
+            const effectiveRateSpan = document.getElementById('effectiveRate');
+            const scheduleTableBody = document.querySelector('#scheduleTable tbody');
+            
+            // Форматирование чисел с разделителями тысяч
+            function formatNumber(num) {
+                return new Intl.NumberFormat('ru-RU').format(Math.round(num));
+            }
+            
+            // Синхронизация полей ввода и ползунков
+            function syncInputAndRange(input, range) {
+                input.addEventListener('input', function() {
+                    range.value = this.value;
+                });
+                
+                range.addEventListener('input', function() {
+                    input.value = this.value;
+                });
+            }
+            
+            syncInputAndRange(loanAmountInput, loanAmountRange);
+            syncInputAndRange(loanTermInput, loanTermRange);
+            syncInputAndRange(interestRateInput, interestRateRange);
+            
+            // Функция форматирования чисел в денежный формат
+            function formatCurrency(amount) {
+                return formatNumber(amount) + ' руб.';
+            }
+            
+            // Функция расчета аннуитетного платежа
+            function calculateAnnuityPayment(loanAmount, annualRate, months) {
+                const monthlyRate = annualRate / 100 / 12;
+                const annuityCoefficient = monthlyRate * Math.pow(1 + monthlyRate, months) / 
+                                          (Math.pow(1 + monthlyRate, months) - 1);
+                return loanAmount * annuityCoefficient;
+            }
+            
+            // Функция расчета дифференцированного платежа
+            function calculateDifferentiatedPayment(loanAmount, annualRate, months, currentMonth) {
+                const basePayment = loanAmount / months;
+                const remainingDebt = loanAmount - (basePayment * (currentMonth - 1));
+                const interestPayment = remainingDebt * (annualRate / 100 / 12);
+                return basePayment + interestPayment;
+            }
+            
+            // Функция создания графика платежей
+            function createPaymentSchedule(loanAmount, annualRate, months, paymentType) {
+                const schedule = [];
+                let remainingDebt = loanAmount;
+                let totalPayment = 0;
+                
+                // Ограничиваем отображение первыми 12 месяцами или общим количеством месяцев, если их меньше
+                const displayMonths = Math.min(months, 12);
+                
+                for (let month = 1; month <= months; month++) {
+                    let principalPayment, interestPayment, monthlyPayment;
+                    
+                    if (paymentType === 'annuity') {
+                        monthlyPayment = calculateAnnuityPayment(loanAmount, annualRate, months);
+                        interestPayment = remainingDebt * (annualRate / 100 / 12);
+                        principalPayment = monthlyPayment - interestPayment;
+                    } else {
+                        principalPayment = loanAmount / months;
+                        interestPayment = remainingDebt * (annualRate / 100 / 12);
+                        monthlyPayment = principalPayment + interestPayment;
+                    }
+                    
+                    // Корректировка последнего платежа
+if (month === months) {
+                        principalPayment = remainingDebt;
+                        monthlyPayment = principalPayment + interestPayment;
+                    }
+                    
+                    remainingDebt -= principalPayment;
+                    if (remainingDebt < 0) remainingDebt = 0;
+                    
+                    totalPayment += monthlyPayment;
+                    
+                    // Добавляем в график только первые displayMonths месяцев
+                    if (month <= displayMonths) {
+                        schedule.push({
+                            month,
+                            monthlyPayment,
+                            principalPayment,
+                            interestPayment,
+                            remainingDebt
+                        });
+                    }
+                }
+                
+                return {
+                    schedule,
+                    totalPayment
+                };
+            }
+            
+            // Расчет эффективной процентной ставки
+            function calculateEffectiveRate(loanAmount, totalPayment, months) {
+                // Упрощенный расчет эффективной ставки
+                const overpayment = totalPayment - loanAmount;
+                const avgLoanAmount = loanAmount / 2; // Упрощенное предположение
+                const monthlyRate = (overpayment / months) / avgLoanAmount;
+                return (monthlyRate * 12 * 100).toFixed(2);
+            }
+            
+            // Обработчик нажатия кнопки расчета
+            calculateBtn.addEventListener('click', function() {
+                const loanAmount = parseFloat(loanAmountInput.value);
+                const loanTerm = parseInt(loanTermInput.value);
+                const interestRate = parseFloat(interestRateInput.value);
+                const paymentType = paymentTypeSelect.value;
+                
+                // Проверка введенных данных
+                if (isNaN(loanAmount) || loanAmount <= 0) {
+                    alert('Пожалуйста, введите корректную сумму займа');
+                    return;
+                }
+                
+                if (isNaN(loanTerm) || loanTerm <= 0) {
+                    alert('Пожалуйста, введите корректный срок займа');
+                    return;
+                }
+                
+                if (isNaN(interestRate) || interestRate <= 0) {
+                    alert('Пожалуйста, введите корректную процентную ставку');
+                    return;
+                }
+                
+                // Расчет платежей
+                const { schedule, totalPayment } = createPaymentSchedule(
+                    loanAmount, interestRate, loanTerm, paymentType
+                );
+                
+                // Отображение результатов
+                const monthlyPayment = paymentType === 'annuity' 
+                    ? calculateAnnuityPayment(loanAmount, interestRate, loanTerm)
+                    : schedule[0].monthlyPayment;
+                
+                monthlyPaymentSpan.textContent = formatCurrency(monthlyPayment);
+                totalPaymentSpan.textContent = formatCurrency(totalPayment);
+                overpaymentSpan.textContent = formatCurrency(totalPayment - loanAmount);
+                
+                // Расчет и отображение эффективной ставки
+                const effectiveRate = calculateEffectiveRate(loanAmount, totalPayment, loanTerm);
+                effectiveRateSpan.textContent = effectiveRate + '%';
+                
+                // Заполнение таблицы графика платежей
+                scheduleTableBody.innerHTML = '';
+                schedule.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.month}</td>
+<td>${formatCurrency(item.monthlyPayment)}</td>
+                        <td>${formatCurrency(item.principalPayment)}</td>
+                        <td>${formatCurrency(item.interestPayment)}</td>
+                        <td>${formatCurrency(item.remainingDebt)}</td>
+                    ;
+                    scheduleTableBody.appendChild(row);
+                });
+                
+                // Показываем результаты с анимацией
+                resultsDiv.style.opacity = 0;
+                resultsDiv.style.display = 'block';
+                let opacity = 0;
+                const fadeIn = setInterval(() => {
+                    opacity += 0.05;
+                    resultsDiv.style.opacity = opacity;
+                    if (opacity >= 1) clearInterval(fadeIn);
+                }, 30);
+            });
+            
+            // Автоматический расчет при загрузке страницы
+            calculateBtn.click();
+        });
+    </script>
+</body>
+</html>
+``
